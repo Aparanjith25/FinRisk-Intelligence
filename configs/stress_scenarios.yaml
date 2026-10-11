@@ -1,0 +1,51 @@
+# FinRisk Intelligence - Stress Test Scenarios Configuration
+# Documented macroeconomic, geopolitical, and credit shock parameters.
+# NOTE: These are simulated stress test shocks for portfolio sensitivity analysis,
+# NOT calibrated econometric forecasts or statistical predictions.
+
+version: "1.0"
+
+scenarios:
+  geopolitical_escalation:
+    id: "geopolitical_escalation"
+    name: "Geopolitical Escalation & Trade Shock"
+    description: "Escalation in geopolitical conflicts, aggressive tariffs, trade restrictions, and energy supply disruptions."
+    category: "Geopolitical"
+    parameters:
+      equity_shock_pct: -18.0          # Global equity broad drawdown percentage
+      interest_rate_shock_bps: 40.0    # Flight-to-safety vs supply-chain inflation pressure (bps)
+      credit_spread_shock_bps: 120.0   # Corporate bond spread widening (bps)
+      loan_loss_shock_pct: 15.0        # Increase in loan default/loss rate (%)
+
+  macroeconomic_stagflation:
+    id: "macroeconomic_stagflation"
+    name: "Macroeconomic Stagflation Shock"
+    description: "Persistent inflation driving aggressive central bank rate hikes combined with negative GDP contraction."
+    category: "Macroeconomic"
+    parameters:
+      equity_shock_pct: -15.0          # Equity valuation compression from higher discount rates
+      interest_rate_shock_bps: 150.0   # Severe 150 bps policy rate increase
+      credit_spread_shock_bps: 80.0    # Moderate spread widening
+      loan_loss_shock_pct: 12.0        # Corporate loan deterioration
+
+  credit_crunch:
+    id: "credit_crunch"
+    name: "Systemic Credit Crunch & Liquidity Contagion"
+    description: "Surge in corporate defaults, rating downgrades, covenant breaches, and widening credit spreads."
+    category: "Credit Event"
+    parameters:
+      equity_shock_pct: -22.0          # High-yield and financial equity selloff
+      interest_rate_shock_bps: -25.0   # Central bank emergency easing / safe-haven sovereign rally
+      credit_spread_shock_bps: 250.0   # Massive 250 bps blowout in corporate credit spreads
+      loan_loss_shock_pct: 35.0        # Severe loan credit impairments and defaults
+
+  mild_recession:
+    id: "mild_recession"
+    name: "Mild Cyclical Recession"
+    description: "Moderate slowdown in consumer spending and modest tightening of corporate credit."
+    category: "Macroeconomic"
+    parameters:
+      equity_shock_pct: -8.0           # Moderate equity pullback
+      interest_rate_shock_bps: -50.0   # Moderate 50 bps central bank rate cut to support growth
+      credit_spread_shock_bps: 45.0    # Minor spread widening
+      loan_loss_shock_pct: 5.0         # Minor increase in loan credit costs

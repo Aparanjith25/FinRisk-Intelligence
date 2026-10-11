@@ -1,0 +1,10 @@
+asset_id,asset_name,asset_type,market_value,duration,credit_rating,spread_bps,baseline_pd,lgd,sector,company,is_synthetic
+EQ_001,AlphaCorp Common Stock,equity,2500000.0,,,,,,Technology,AlphaCorp,true
+EQ_002,BetaEnergy Common Stock,equity,1800000.0,,,,,,Energy,BetaEnergy,true
+EQ_003,DeltaLogistics Common Stock,equity,1200000.0,,,,,,Industrials,DeltaLogistics,true
+CB_001,GammaBank 5.25% Senior Notes 2029,corporate_bond,2000000.0,4.8,BBB,185.0,,,Financials,GammaBank,true
+CB_002,EnergyCorp 7.50% High Yield 2027,corporate_bond,1000000.0,3.2,BB,380.0,,,Energy,EnergyCorp,true
+GB_001,US Treasury 10-Year Benchmark,government_bond,3000000.0,8.2,AAA,0.0,,,Sovereign,,true
+GB_002,US Treasury 5-Year Note,government_bond,2000000.0,4.4,AAA,0.0,,,Sovereign,,true
+LN_001,Commercial Real Estate Syndicated Loan,loan,1500000.0,,,0.0,0.035,0.45,Real Estate,,true
+LN_002,MidMarket Industrial Term Loan,loan,1000000.0,,,0.0,0.050,0.40,Industrials,,true

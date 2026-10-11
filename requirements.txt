@@ -1,0 +1,20 @@
+# Core Application & API Stack
+fastapi
+uvicorn
+pyyaml
+httpx
+pydantic
+pytest
+
+# Dashboard & Interactive Visualization
+streamlit
+plotly
+
+# Data Processing
+pandas
+numpy
+
+# Optional Pretrained NLP & Deep Learning (Not installed in local offline test mode)
+# scikit-learn
+# transformers
+# torch

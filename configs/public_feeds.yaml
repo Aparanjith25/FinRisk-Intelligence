@@ -1,0 +1,36 @@
+# Public Financial News Feeds Configuration
+# Verified legitimate public-domain regulatory & central-banking RSS/Atom feeds
+
+settings:
+  default_timeout_seconds: 10
+  max_retries: 2
+  retry_backoff_seconds: 1.0
+  user_agent: "FinRisk-Intelligence/1.0 (+https://github.com/finrisk-intelligence)"
+
+feeds:
+  federal_reserve:
+    feed_id: "federal_reserve"
+    name: "U.S. Federal Reserve Press Releases"
+    url: "https://www.federalreserve.gov/feeds/press_all.xml"
+    description: "Official monetary policy decisions, banking supervision, and financial stability statements."
+    default_category: "Macroeconomic"
+    provenance: "real_public_news"
+    enabled: true
+
+  sec_press_releases:
+    feed_id: "sec_press_releases"
+    name: "U.S. SEC Press Releases"
+    url: "https://www.sec.gov/news/pressreleases.rss"
+    description: "Official regulatory enforcement actions, corporate filings, and disclosure rules from the SEC."
+    default_category: "Credit Event"
+    provenance: "real_public_news"
+    enabled: true
+
+  ecb_press_releases:
+    feed_id: "ecb_press_releases"
+    name: "European Central Bank Press Releases"
+    url: "https://www.ecb.europa.eu/rss/press.html"
+    description: "Monetary policy announcements, banking supervision measures, and euro area financial communications."
+    default_category: "Macroeconomic"
+    provenance: "real_public_news"
+    enabled: true

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>Synthetic Financial News Feed (Test Dataset - Not Real News)</title>
+    <link>http://localhost/sample-news</link>
+    <description>Synthetic financial news articles for testing FinRisk ingestion pipeline. All entries are synthetic.</description>
+    <language>en-us</language>
+    <pubDate>Thu, 10 Oct 2024 10:00:00 GMT</pubDate>
+    <item>
+      <title>[SYNTHETIC] AlphaCorp reports quarterly operating margins above expectations</title>
+      <description>AlphaCorp reported operating profit margins increased by 1.8 percent, driven by operational efficiencies across North American divisions.</description>
+      <link>http://localhost/news/synthetic-101</link>
+      <pubDate>Thu, 10 Oct 2024 09:30:00 GMT</pubDate>
+      <source>Synthetic News Wire</source>
+    </item>
+    <item>
+      <title>[SYNTHETIC] BetaEnergy faces regulatory review over carbon compliance disclosures</title>
+      <description>Regulatory authorities initiated an inquiry regarding carbon emission reporting discrepancies at BetaEnergy manufacturing facilities.</description>
+      <link>http://localhost/news/synthetic-102</link>
+      <pubDate>Thu, 10 Oct 2024 08:15:00 GMT</pubDate>
+      <source>Synthetic News Wire</source>
+    </item>
+    <item>
+      <title>[SYNTHETIC] GammaBank raises reserve provisions ahead of credit cycle headwinds</title>
+      <description>GammaBank allocated an additional 50 million to loan loss provisions in response to rising borrowing costs in commercial real estate portfolios.</description>
+      <link>http://localhost/news/synthetic-103</link>
+      <pubDate>Thu, 10 Oct 2024 07:45:00 GMT</pubDate>
+      <source>Synthetic News Wire</source>
+    </item>
+    <item>
+      <title>[SYNTHETIC] DeltaLogistics reports shipping delays due to port automation strike</title>
+      <description>Container shipments at major coastal hubs experienced multi-day backlogs following union strikes over automated cranes.</description>
+      <link>http://localhost/news/synthetic-104</link>
+      <pubDate>Thu, 10 Oct 2024 06:20:00 GMT</pubDate>
+      <source>Synthetic News Wire</source>
+    </item>
+  </channel>
+</rss>

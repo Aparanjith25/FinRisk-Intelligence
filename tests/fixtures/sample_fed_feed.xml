@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Federal Reserve Board - Press Releases</title>
+    <link>https://www.federalreserve.gov/newsevents/pressreleases.htm</link>
+    <description>Press releases issued by the Federal Reserve Board</description>
+    <item>
+      <title>Federal Reserve issues FOMC statement on monetary policy decisions</title>
+      <description>The Federal Open Market Committee decided to maintain the target range for the federal funds rate at 4.75 to 5.0 percent. Indicators suggest that economic activity has continued to expand at a solid pace, with inflation remaining somewhat elevated above target.</description>
+      <link>https://www.federalreserve.gov/newsevents/pressreleases/monetary20261001a.htm</link>
+      <pubDate>Thu, 01 Oct 2026 14:00:00 GMT</pubDate>
+      <guid>https://www.federalreserve.gov/newsevents/pressreleases/monetary20261001a.htm</guid>
+    </item>
+    <item>
+      <title>Federal Reserve Board announces enforcement action against regional bank holding company</title>
+      <description>The Federal Reserve Board announced a consent cease and desist order against Metro Financial Corp for deficiencies in risk management and compliance with capital adequacy requirements.</description>
+      <link>https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261002a.htm</link>
+      <pubDate>Fri, 02 Oct 2026 15:30:00 GMT</pubDate>
+      <guid>https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261002a.htm</guid>
+    </item>
+  </channel>
+</rss>
