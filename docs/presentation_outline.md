@@ -43,6 +43,7 @@
 - **Continuous Sentiment Mapping:**
   - Rather than discrete binary labels, computes $P(\text{positive}) - P(\text{negative})$ to capture nuanced market sentiment.
   - Transparent deployment: Graceful offline baseline fallback with honest metadata attribution (`offline_fallback_baseline` vs. `pretrained_transformers`).
+  - Preliminary Benchmark ($N = 30$ regulatory articles): ProsusAI/FinBERT achieved 76.67% accuracy (Macro F1 0.7548) vs. 70.00% baseline (Macro F1 0.6849). On 8 held-out ECB articles, baseline scored 87.5% vs. FinBERT's 75.0% as FinBERT classified all 8 as neutral.
 - **Deterministic Event Classifier:**
   - Regex pattern matchers with precedence ordering covering macroeconomic shifts, credit defaults, tariffs, and corporate restructuring.
 - **Explainable Impact Scoring (Scale 1–10):**
@@ -63,6 +64,7 @@
   - Severe Credit Crunch & Spread Widening (9.21% portfolio loss).
   - Mild Recessionary Cooling (1.95% portfolio loss).
 - **Mathematical Consistency:** Asset-level losses sum exactly to total portfolio loss with 100% loss contribution accounting.
+- **Stylized Modeling Approximations:** Employs first-order modified duration sensitivity without second-order convexity ($C$) adjustments; loan impairment uses scalar expected loss multiplier.
 
 ---
 
@@ -79,7 +81,7 @@
 
 ### Slide 7: Engineering Rigor, Honest Limitations & Future Roadmap
 - **Engineering Excellence:**
-  - **106 passing automated tests** across unit, integration, API, and UI AppTest suites.
+  - **129 passing automated tests (133 collected, 4 live FinBERT tests cleanly skipped)** across unit, integration, API, and UI AppTest suites.
   - Zero external network dependency required to run the test suite or launch the core dashboard.
   - Defensive fault tolerance: per-feed network isolation, bounded HTTP timeouts, automatic deduplication.
 - **Transparent Limitations (Honest AI Principles):**

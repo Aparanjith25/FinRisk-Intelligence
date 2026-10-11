@@ -35,7 +35,7 @@ This checklist documents the repository audit performed for **Milestone 5: Final
 ## 4. Security & Secrets Audit
 - [x] **Zero Hardcoded Secrets:** Scanned repository for `password`, `secret`, `api_key`, `token`, and private keys. Result: **0 matches**.
 - [x] **Zero Hardcoded Absolute Paths:** All modules construct relative filesystem references dynamically using `Path(__file__).resolve().parent...`. No hardcoded user directories exist.
-- [x] **Zero Active Network Calls in Tests:** All 106 automated tests run completely offline using local XML fixtures and unittest mocks.
+- [x] **Zero Active Network Calls in Tests:** All 129 passing automated tests run completely offline using local XML fixtures and unittest mocks (4 live FinBERT tests cleanly skipped).
 
 ---
 
@@ -47,7 +47,7 @@ This checklist documents the repository audit performed for **Milestone 5: Final
 ---
 
 ## 6. Pre-Submission Status & Approval Gate
-- [x] **Test Suite Status:** **106 passed, 0 failed, 0 skipped** (Execution time: ~7.2s).
+- [x] **Test Suite Status:** **129 passed, 4 skipped, 0 failed** (133 collected; execution time: ~18.5s; 4 live FinBERT tests cleanly skipped in primary environment).
 - [x] **Code Quality:** All syntax and imports verified; no pending deprecations or unhandled exceptions.
 - [ ] **Approval Gate (Pending User Authorization):**
   > [!IMPORTANT]

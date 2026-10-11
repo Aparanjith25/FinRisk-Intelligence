@@ -13,7 +13,7 @@ This guide provides two demonstration scripts:
 - **0:45 – 1:45 (60s):** Streamlit dashboard: NLP Risk Signals & Dual Stream Provenance.
 - **1:45 – 3:00 (75s):** Portfolio Stress Testing: Execution, formulas & loss contribution.
 - **3:00 – 4:00 (60s):** FastAPI interactive Swagger docs & live endpoint query.
-- **4:00 – 5:00 (60s):** Engineering rigor, 106 automated tests, honest limitations, and Q&A transition.
+- **4:00 – 5:00 (60s):** Engineering rigor, 129 passing offline tests (4 live ML tests cleanly skipped), honest limitations, and Q&A transition.
 
 ---
 
@@ -58,9 +58,9 @@ This guide provides two demonstration scripts:
 > *Let's execute a quick query against `GET /risk-signals?provenance=real_public_news`. As you can see, it returns the structured JSON payload containing real regulatory signals, sentiment scores, and attribution URLs."*
 
 #### 4:00 – 5:00 | Engineering Rigor & Conclusion
-> *(Screen: Show terminal with 106 passed tests)*
+> *(Screen: Show terminal with 129 passed tests, 4 skipped)*
 >
-> *"To ensure enterprise-grade reliability, our codebase contains **106 automated offline tests** covering everything from data normalization, event classification, and financial valuation formulas, to FastAPI endpoints and UI AppTests.*
+> *"To ensure enterprise-grade reliability, our codebase contains **133 collected tests—129 passed offline and 4 live FinBERT neural tests cleanly skipped in the primary environment**—covering everything from data normalization, event classification, and financial valuation formulas, to scenario mapping, FastAPI endpoints, and UI AppTests.*
 >
 > *In adherence to honest AI and financial modeling ethics, our platform operates with zero external network dependencies for testing, provides a deterministic offline fallback when deep learning checkpoints are unavailable, and explicitly distinguishes qualitative narrative signals from calibrated market forecasts.*
 >
@@ -136,7 +136,7 @@ This guide provides two demonstration scripts:
   ```powershell
   pytest -v
   ```
-- Showcase **106 passing tests** across all modules:
+- Showcase **129 passing tests (4 live ML tests cleanly skipped)** across all modules:
   - Unit tests for ingestion, normalization, sentiment, classification, impact scoring, scenario engine.
   - Integration tests for end-to-end pipeline execution.
   - Regression tests for provenance isolation, offline sentiment fallback, and AppTest UI rendering.

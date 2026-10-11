@@ -6,7 +6,7 @@
 [![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
 [![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B.svg)](https://streamlit.io/)
-[![Tests Passing](https://img.shields.io/badge/tests-106%20passed-brightgreen.svg)](tests/)
+[![Tests Passing](https://img.shields.io/badge/tests-129%20passed%20%7C%204%20skipped-brightgreen.svg)](tests/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
@@ -20,7 +20,7 @@
 2. **AI/NLP Risk Engine:** Financial sentiment analysis mapped to continuous scores in `[-1.0, 1.0]`, rule-based financial event classification across 6 categories, and explainable integer impact scoring (`1` to `10`) with full audit rationales.
 3. **Strategic Portfolio Stress Testing:** Multi-asset valuation sensitivity approximations across Equities, Government Bonds, Corporate Bonds, and Loans under preconfigured macroeconomic, geopolitical, and credit shock scenarios.
 4. **REST API & Interactive Dashboard:** Production-ready FastAPI microservice with OpenAPI documentation and an interactive Streamlit analytics dashboard supporting dual-stream data exploration and local fallback execution.
-5. **Honest AI & Offline Reliability:** 106 automated offline tests with zero external network dependencies, transparent metadata labeling (`offline_fallback_baseline` vs. `pretrained_transformers`), and explicit non-fabrication guarantees.
+5. **Honest AI & Offline Reliability:** 133 collected tests (129 passing offline, 4 live FinBERT tests cleanly skipped in the primary environment) with zero external network dependencies, transparent metadata labeling (`offline_fallback_baseline` vs. `pretrained_transformers`), and explicit non-fabrication guarantees.
 
 ---
 
@@ -103,7 +103,7 @@ The entire test suite executes **100% offline** without model downloads or inter
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -v
 ```
-*Expected Result:* `106 passed in ~7.2s`
+*Expected Result:* `129 passed, 4 skipped in ~18.5s` (4 live FinBERT inference tests cleanly skipped in the primary environment).
 
 ### 3. Run Pipeline Batch Scripts
 ```powershell
@@ -290,6 +290,8 @@ FinRisk Intelligence supports two distinct, isolated data streams:
 2. **Qualitative Intelligence vs. Quantitative Calibration:** Financial NLP risk signals highlight emerging operational, credit, or geopolitical events. They do **not** automatically calibrate quantitative basis-point rate shocks.
 3. **Provisional NLP Heuristics:** Financial event classifications are driven by deterministic regex rules designed for pipeline validation. Sentiment inference in offline mode utilizes a transparent domain baseline (`offline_fallback_baseline`), explicitly labeled to prevent false claims of active deep learning execution.
 4. **Zero Web Scraping / Compliance:** The platform strictly accesses public-domain RSS syndication feeds using respectful bounded timeouts (10s) and standard User-Agent identification. No access controls or paywalls are bypassed.
+5. **Preliminary Sentiment Benchmark:** An isolated preliminary benchmark across 30 human-annotated regulatory articles yielded 76.67% accuracy (Macro F1: 0.7548) for genuine FinBERT vs. 70.00% accuracy (Macro F1: 0.6849) for the deterministic baseline. On the 8-article held-out ECB subset, the deterministic baseline achieved 87.5% accuracy vs. FinBERT's 75.0%, as FinBERT conservatively classified all eight articles as neutral due to hedged central-bank phrasing. Because the overall evaluation sample size is preliminary ($N = 30$), these metrics demonstrate architectural feasibility rather than generalized real-world superiority.
+6. **Linear Duration Approximation:** Fixed-income sensitivity employs first-order modified duration without second-order convexity adjustments; large yield shocks (>200 bps) represent stylized linear approximations rather than full DCF cash-flow repricing.
 
 ---
 
