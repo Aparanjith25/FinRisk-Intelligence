@@ -19,14 +19,55 @@ def test_load_sample_portfolio():
     assert sample_csv.exists()
 
     portfolio = load_portfolio_csv(sample_csv)
-    assert portfolio.asset_count == 9
-    assert portfolio.total_market_value == 16000000.0
+    assert portfolio.asset_count == 10
+    assert portfolio.total_market_value == 17000000.0
 
     counts = portfolio.asset_type_counts
     assert counts["equity"] == 3
     assert counts["corporate_bond"] == 2
     assert counts["government_bond"] == 2
     assert counts["loan"] == 2
+    assert counts["derivative"] == 1
+
+
+def test_validate_derivative_asset():
+    """Verify validation of derivative interest rate swap holding."""
+    row = {
+        "asset_id": "SW_TEST",
+        "asset_name": "Test Pay-Fixed Swap",
+        "asset_type": "derivative",
+        "market_value": "1000000.0",
+        "duration": "4.2",
+        "notional": "10000000.0",
+        "pay_receive": "pay_fixed",
+        "dv01": "4200.0",
+    }
+    asset = validate_asset_row(row)
+    assert asset.asset_type == "derivative"
+    assert asset.market_value == 1000000.0
+    assert asset.notional == 10000000.0
+    assert asset.pay_receive == "pay_fixed"
+    assert asset.dv01 == 4200.0
+
+    # Invalid direction raises
+    with pytest.raises(ValueError, match="Invalid 'pay_receive'"):
+        validate_asset_row({
+            "asset_id": "SW_BAD",
+            "asset_name": "Bad Swap",
+            "asset_type": "derivative",
+            "market_value": "1000000.0",
+            "pay_receive": "straddle",
+        })
+
+    # Negative notional raises
+    with pytest.raises(ValueError, match="must be strictly positive"):
+        validate_asset_row({
+            "asset_id": "SW_BAD",
+            "asset_name": "Bad Swap",
+            "asset_type": "derivative",
+            "market_value": "1000000.0",
+            "notional": "-500000",
+        })
 
 
 def test_validate_asset_valid():

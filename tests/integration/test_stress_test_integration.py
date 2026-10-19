@@ -29,7 +29,7 @@ def test_complete_risk_to_stress_test_integration():
     for sc_id in scenarios.keys():
         result = engine.run_stress_test(portfolio=portfolio, scenario_id=sc_id)
 
-        assert result.baseline_portfolio_value == 16000000.0
+        assert result.baseline_portfolio_value == 17000000.0
         assert result.stressed_portfolio_value > 0.0
         assert result.total_absolute_loss >= 0.0
         assert result.total_percentage_loss >= 0.0

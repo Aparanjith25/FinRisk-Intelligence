@@ -1,0 +1,4 @@
+# Optional FinBERT / Deep Learning Requirements
+# Install only on systems with sufficient disk space and memory (>4GB RAM, >2GB free disk)
+torch>=2.0.0
+transformers>=4.35.0

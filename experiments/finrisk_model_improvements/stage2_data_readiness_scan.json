@@ -1,0 +1,75 @@
+{
+  "zeroshot/twitter-financial-news-sentiment": {
+    "status": "AVAILABLE",
+    "downloads": 6698,
+    "tags": [
+      "task_categories:text-classification",
+      "task_ids:multi-class-classification",
+      "annotations_creators:other",
+      "language_creators:other",
+      "multilinguality:monolingual",
+      "source_datasets:original",
+      "language:en",
+      "license:mit",
+      "size_categories:10K<n<100K",
+      "format:csv",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us",
+      "twitter",
+      "finance",
+      "markets",
+      "stocks",
+      "wallstreet",
+      "quant",
+      "hedgefunds"
+    ],
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "sent_dataset_meta.txt",
+      "sent_train.csv",
+      "sent_valid.csv"
+    ]
+  },
+  "financial_phrasebank": {
+    "status": "AVAILABLE",
+    "downloads": 8746,
+    "tags": [
+      "task_categories:text-classification",
+      "task_ids:multi-class-classification",
+      "task_ids:sentiment-classification",
+      "annotations_creators:expert-generated",
+      "language_creators:found",
+      "multilinguality:monolingual",
+      "source_datasets:original",
+      "language:en",
+      "license:cc-by-nc-sa-3.0",
+      "size_categories:1K<n<10K",
+      "arxiv:1307.5336",
+      "region:us",
+      "finance"
+    ],
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "data/FinancialPhraseBank-v1.0.zip",
+      "financial_phrasebank.py"
+    ]
+  },
+  "SALT-NLP/FLUE": {
+    "status": "UNAVAILABLE",
+    "error": "401 Client Error. (Request ID: Root=1-6ad3db4e-761581eb3395138a1db49c8f;5847dcfe-e7a9-44d0-b04d-e2bc0045c2bc)\n\nRepository Not Found for url: https://huggingface.co/api/datasets/SALT-NLP/FLUE.\nPlease make sure you specified the correct `repo_id` and `repo_type`.\nIf you are trying to access a private or gated repo, make sure you are authenticated and your token has the required permissions.\nFor more details, see https://huggingface.co/docs/huggingface_hub/authentication\nInvalid username or password."
+  },
+  "StephanAkkerman/financial-tweets-sentiment": {
+    "status": "UNAVAILABLE",
+    "error": "401 Client Error. (Request ID: Root=1-6ad3db4e-45580299567b76c36a95ce19;495b6cef-519d-405d-8d81-e024693aadcd)\n\nRepository Not Found for url: https://huggingface.co/api/datasets/StephanAkkerman/financial-tweets-sentiment.\nPlease make sure you specified the correct `repo_id` and `repo_type`.\nIf you are trying to access a private or gated repo, make sure you are authenticated and your token has the required permissions.\nFor more details, see https://huggingface.co/docs/huggingface_hub/authentication\nInvalid username or password."
+  },
+  "FinLLMs/FinancialPhraseBank-v1.0": {
+    "status": "UNAVAILABLE",
+    "error": "401 Client Error. (Request ID: Root=1-6ad3db4e-7d036ffb1e86d3ba706cf75e;ac4c87d0-b51d-40bf-a3c0-d777780a3891)\n\nRepository Not Found for url: https://huggingface.co/api/datasets/FinLLMs/FinancialPhraseBank-v1.0.\nPlease make sure you specified the correct `repo_id` and `repo_type`.\nIf you are trying to access a private or gated repo, make sure you are authenticated and your token has the required permissions.\nFor more details, see https://huggingface.co/docs/huggingface_hub/authentication\nInvalid username or password."
+  }
+}

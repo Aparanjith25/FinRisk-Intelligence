@@ -28,6 +28,7 @@ MANIFEST
 
 # Virtual environments
 .venv/
+.venv*/
 venv/
 ENV/
 env/
@@ -100,3 +101,5 @@ data/raw/*
 data/processed/*
 !data/processed/.gitkeep
 
+# Local fine-tuning checkpoint
+experiments/finbert_finetuning/best_checkpoint/

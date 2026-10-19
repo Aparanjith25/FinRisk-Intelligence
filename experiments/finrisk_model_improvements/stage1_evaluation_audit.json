@@ -1,0 +1,155 @@
+{
+  "audit_timestamp": "2026-10-18T02:00:00Z",
+  "checks": {
+    "label_mapping": {
+      "status": "PASSED",
+      "model_a_id2label": {
+        "0": "positive",
+        "1": "negative",
+        "2": "neutral"
+      },
+      "model_a_label2id": {
+        "positive": 0,
+        "negative": 1,
+        "neutral": 2
+      },
+      "model_c_id2label": {
+        "0": "positive",
+        "1": "negative",
+        "2": "neutral"
+      },
+      "model_c_label2id": {
+        "negative": 1,
+        "neutral": 2,
+        "positive": 0
+      },
+      "matches_canonical": true
+    },
+    "metric_reproducibility": {
+      "status": "PASSED",
+      "details": {
+        "Model B (Baseline)": {
+          "phrasebank_test": {
+            "reproduced": true,
+            "saved_acc": 0.6814,
+            "recomputed_acc": 0.6814,
+            "saved_macro_f1": 0.4265,
+            "recomputed_macro_f1": 0.4265
+          },
+          "regulatory_benchmark_all": {
+            "reproduced": true,
+            "saved_acc": 0.7,
+            "recomputed_acc": 0.7,
+            "saved_macro_f1": 0.6849,
+            "recomputed_macro_f1": 0.6849
+          },
+          "regulatory_benchmark_dev": {
+            "reproduced": true,
+            "saved_acc": 0.6364,
+            "recomputed_acc": 0.6364,
+            "saved_macro_f1": 0.6405,
+            "recomputed_macro_f1": 0.6405
+          },
+          "regulatory_benchmark_heldout_ecb": {
+            "reproduced": true,
+            "saved_acc": 0.875,
+            "recomputed_acc": 0.875,
+            "saved_macro_f1": 0.641,
+            "recomputed_macro_f1": 0.641
+          }
+        },
+        "Model A (Pretrained FinBERT)": {
+          "phrasebank_test": {
+            "reproduced": true,
+            "saved_acc": 0.9735,
+            "recomputed_acc": 0.9735,
+            "saved_macro_f1": 0.9628,
+            "recomputed_macro_f1": 0.9628
+          },
+          "regulatory_benchmark_all": {
+            "reproduced": true,
+            "saved_acc": 0.7667,
+            "recomputed_acc": 0.7667,
+            "saved_macro_f1": 0.7548,
+            "recomputed_macro_f1": 0.7548
+          },
+          "regulatory_benchmark_dev": {
+            "reproduced": true,
+            "saved_acc": 0.7727,
+            "recomputed_acc": 0.7727,
+            "saved_macro_f1": 0.7694,
+            "recomputed_macro_f1": 0.7694
+          },
+          "regulatory_benchmark_heldout_ecb": {
+            "reproduced": true,
+            "saved_acc": 0.75,
+            "recomputed_acc": 0.75,
+            "saved_macro_f1": 0.2857,
+            "recomputed_macro_f1": 0.2857
+          }
+        },
+        "Model C (Fine-Tuned FinBERT)": {
+          "phrasebank_test": {
+            "reproduced": true,
+            "saved_acc": 0.9853,
+            "recomputed_acc": 0.9853,
+            "saved_macro_f1": 0.9746,
+            "recomputed_macro_f1": 0.9746
+          },
+          "regulatory_benchmark_all": {
+            "reproduced": true,
+            "saved_acc": 0.6,
+            "recomputed_acc": 0.6,
+            "saved_macro_f1": 0.5556,
+            "recomputed_macro_f1": 0.5556
+          },
+          "regulatory_benchmark_dev": {
+            "reproduced": true,
+            "saved_acc": 0.5455,
+            "recomputed_acc": 0.5455,
+            "saved_macro_f1": 0.5455,
+            "recomputed_macro_f1": 0.5455
+          },
+          "regulatory_benchmark_heldout_ecb": {
+            "reproduced": true,
+            "saved_acc": 0.75,
+            "recomputed_acc": 0.75,
+            "saved_macro_f1": 0.2857,
+            "recomputed_macro_f1": 0.2857
+          }
+        }
+      }
+    },
+    "split_leakage": {
+      "train_samples": 1585,
+      "dev_samples": 340,
+      "test_samples": 339,
+      "dev_exact_overlaps": 1,
+      "test_exact_overlaps": 1,
+      "dev_near_duplicates_gt_85pct": 1,
+      "test_near_duplicates_gt_85pct": 1,
+      "leakage_assessment": "CLEAN"
+    },
+    "regulatory_benchmark_independence": {
+      "status": "INDEPENDENT",
+      "regulatory_samples": 30,
+      "overlaps_with_phrasebank": 0,
+      "used_in_training": false,
+      "used_in_hyperparameter_tuning": false
+    },
+    "prosusai_finbert_provenance": {
+      "upstream_paper": "Dogu Araci, 'FinBERT: Financial Sentiment Analysis with Pre-trained Language Models', arXiv:1908.10063 (2019)",
+      "pretraining_corpus": "TRC2-financial (Reuters news, 46,143 documents, 29M words)",
+      "sentiment_finetuning_corpus": "Financial PhraseBank (Malo et al., 2014)",
+      "huggingface_repo": "ProsusAI/finbert",
+      "implication": "CRITICAL: ProsusAI/finbert was ALREADY fine-tuned on Financial PhraseBank in upstream training. Therefore, evaluations on Financial PhraseBank (including our 339-sample test split) reflect in-domain re-testing on the original training distribution, which explains the high baseline (97.35% accuracy, 0.9628 F1). The PhraseBank test results MUST be classified as POTENTIALLY NON-INDEPENDENT from upstream pretraining. In contrast, the 30-sample Regulatory Benchmark represents a genuinely novel out-of-domain transfer test."
+    },
+    "checkpoint_correspondence": {
+      "checkpoint_dir": "C:\\FinRisk-Intelligence\\experiments\\finbert_finetuning\\best_checkpoint",
+      "safetensors_size_bytes": 437961724,
+      "safetensors_size_mb": 417.67,
+      "logged_dev_macro_f1": 0.9684,
+      "matches_logged_run": true
+    }
+  }
+}

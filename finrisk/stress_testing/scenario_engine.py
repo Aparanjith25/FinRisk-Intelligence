@@ -106,6 +106,7 @@ class ScenarioEngine:
         2. Government Bond: Stressed = Baseline * (1 - duration * (rate_shock_bps / 10000))
         3. Corporate Bond: Stressed = Baseline * (1 - duration * ((rate_shock_bps + spread_shock_bps) / 10000))
         4. Loan: Stressed = Baseline * (1 - (baseline_pd * lgd * (1 + loan_loss_shock_pct / 100)))
+        5. Derivative (IRS): Stressed = Baseline ± (DV01_$ * rate_shock_bps) (pay-fixed gains on hikes; receive-fixed gains on cuts)
         """
         base_val = asset.market_value
         eq_shock_pct = float(parameters.get("equity_shock_pct", 0.0))
@@ -131,7 +132,7 @@ class ScenarioEngine:
             stressed_val = max(0.0, base_val * (1.0 + delta_p_pct))
             applied_shocks["interest_rate_shock_bps"] = rate_shock_bps
             applied_shocks["duration"] = dur
-            valuation_method = "Duration Sensitivity: V_stressed = V_base * (1 - Duration * Δy_rates)"
+            valuation_method = "Duration Sensitivity: V_stressed = V_base * (1 - Duration * Delta_y_rates)"
 
         elif asset.asset_type == "corporate_bond":
             # Duration sensitivity to interest rates + credit spread widening
@@ -143,7 +144,7 @@ class ScenarioEngine:
             applied_shocks["interest_rate_shock_bps"] = rate_shock_bps
             applied_shocks["credit_spread_shock_bps"] = spread_shock_bps
             applied_shocks["duration"] = dur
-            valuation_method = "Duration & Spread Sensitivity: V_stressed = V_base * (1 - Duration * (Δy_rates + Δs_spread))"
+            valuation_method = "Duration & Spread Sensitivity: V_stressed = V_base * (1 - Duration * (Delta_y_rates + Delta_s_spread))"
 
         elif asset.asset_type == "loan":
             # Baseline expected loss stressed by multiplier
@@ -157,6 +158,49 @@ class ScenarioEngine:
             applied_shocks["lgd"] = lgd
             applied_shocks["effective_loss_rate"] = round(stressed_loss_rate, 4)
             valuation_method = "Loan Credit Impairment: V_stressed = V_base * (1 - (PD * LGD * (1 + shock_pct)))"
+
+        elif asset.asset_type == "derivative":
+            # Simplified DV01 valuation of an Interest Rate Swap (IRS)
+            # DV01 (Dollar Value of an 01) is expressed as currency ($) change per 1 basis point (0.0001) shift in benchmark rates.
+            # Normalized sensitivity (% per bp) = (dv01_dollar / base_val) * 100
+            #
+            # Directional P&L Mechanics:
+            # - Pay-Fixed Swap (Payer Hedge): Pays fixed rate, receives floating rate.
+            #   Rising rates (+Delta_y_rates) increase floating cashflows received -> MtM value increases (gain).
+            #   Falling rates (-Delta_y_rates) reduce floating cashflows received -> MtM value decreases (loss).
+            # - Receive-Fixed Swap (Receiver): Receives fixed rate, pays floating rate.
+            #   Rising rates (+Delta_y_rates) increase floating cashflows paid -> MtM value decreases (loss).
+            #   Falling rates (-Delta_y_rates) decrease floating cashflows paid -> MtM value increases (gain).
+            direction = (asset.pay_receive or "pay_fixed").lower().strip()
+            dur = asset.duration if asset.duration is not None else 4.2
+            notional = asset.notional if asset.notional is not None else (base_val * 10.0)
+
+            # Currency DV01 ($/bp): Currency value change per basis point
+            if asset.dv01 is not None and asset.dv01 > 0:
+                dv01_dollar = float(asset.dv01)
+            else:
+                dv01_dollar = round(notional * dur * 0.0001, 2)
+
+            # Directional valuation change
+            if direction in ("pay_fixed", "payer"):
+                delta_v = dv01_dollar * rate_shock_bps
+                direction_label = "Pay-Fixed (Payer Macro Hedge)"
+            else:
+                delta_v = -dv01_dollar * rate_shock_bps
+                direction_label = "Receive-Fixed (Receiver)"
+
+            stressed_val = max(0.0, round(base_val + delta_v, 2))
+            applied_shocks["interest_rate_shock_bps"] = rate_shock_bps
+            applied_shocks["notional"] = notional
+            applied_shocks["direction"] = direction_label
+            applied_shocks["dv01_dollar"] = dv01_dollar
+            applied_shocks["normalized_sensitivity_pct_per_bp"] = (
+                round((dv01_dollar / base_val) * 100.0, 4) if base_val > 0 else 0.0
+            )
+            valuation_method = (
+                f"Linear DV01 Swap Valuation ({direction_label}): V_stressed = V_base {'+' if direction in ('pay_fixed', 'payer') else '-'} "
+                f"(DV01_$ * Delta_y_rates_bps)"
+            )
 
         else:
             stressed_val = base_val

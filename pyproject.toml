@@ -20,6 +20,12 @@ dependencies = [
     "numpy>=1.26.0",
 ]
 
+[project.optional-dependencies]
+finbert = [
+    "torch>=2.0.0",
+    "transformers>=4.35.0",
+]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["finrisk*"]

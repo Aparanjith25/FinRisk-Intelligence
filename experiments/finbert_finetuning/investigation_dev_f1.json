@@ -1,0 +1,11 @@
+{
+  "raw_sentences": 2264,
+  "unique_raw_sentences": 2259,
+  "duplicate_raw_sentences": 5,
+  "dev_exact_train_overlap": 1,
+  "test_exact_train_overlap": 1,
+  "pretrained_dev_accuracy": 0.9794,
+  "pretrained_dev_macro_f1": 0.968,
+  "pb_avg_words": 22.4,
+  "reg_avg_words": 33.5
+}

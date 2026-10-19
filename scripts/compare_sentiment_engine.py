@@ -17,10 +17,11 @@ import sys
 import time
 from typing import Any, Dict, List, Tuple
 
-# Ensure environment variables point to E: drive
-os.environ["HF_HOME"] = r"E:\hf_home"
-os.environ["HF_HUB_CACHE"] = r"E:\hf_home\hub"
-os.environ["TRANSFORMERS_CACHE"] = r"E:\hf_home"
+# Safeguard environments with E: drive cache if present
+if os.path.exists(r"E:\hf_home"):
+    os.environ["HF_HOME"] = r"E:\hf_home"
+    os.environ["HF_HUB_CACHE"] = r"E:\hf_home\hub"
+    os.environ["TRANSFORMERS_CACHE"] = r"E:\hf_home"
 
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

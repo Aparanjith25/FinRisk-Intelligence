@@ -46,12 +46,57 @@ except ImportError:
 
 import httpx
 
+from finrisk.risk_engine.alerting import DEFAULT_HIGH_IMPACT_THRESHOLD, detect_high_impact_alerts
 from finrisk.stress_testing.portfolio import Portfolio, load_portfolio_csv
 from finrisk.stress_testing.scenario_engine import ScenarioEngine, StressTestResult, load_scenarios_from_yaml
 
 
 API_BASE_URL = "http://127.0.0.1:8000"
 DEFAULT_TIMEOUT = 3.0
+
+
+def format_pnl_currency(loss_amount: float) -> str:
+    """Format an absolute loss amount as a signed P&L currency string.
+
+    Convention from ScenarioEngine:
+        loss_amount > 0 represents a loss (reduction in portfolio value).
+        loss_amount < 0 represents a gain (increase in portfolio value).
+        loss_amount == 0 represents unchanged value.
+
+    Returns:
+        '-$123,000.00' for loss_amount > 0
+        '+$123,000.00' for loss_amount < 0
+        '$0.00' for loss_amount == 0
+    """
+    val = round(float(loss_amount or 0.0), 2)
+    if val > 0:
+        return f"-${val:,.2f}"
+    elif val < 0:
+        return f"+${abs(val):,.2f}"
+    else:
+        return "$0.00"
+
+
+def format_pnl_percentage(loss_pct: float) -> str:
+    """Format a percentage loss as a signed P&L percentage string.
+
+    Convention from ScenarioEngine:
+        loss_pct > 0 represents a percentage loss.
+        loss_pct < 0 represents a percentage gain.
+        loss_pct == 0 represents unchanged percentage.
+
+    Returns:
+        '-4.1%' for loss_pct > 0
+        '+4.1%' for loss_pct < 0
+        '0.0%' for loss_pct == 0
+    """
+    val = round(float(loss_pct or 0.0), 2)
+    if val > 0:
+        return f"-{val}%"
+    elif val < 0:
+        return f"+{abs(val)}%"
+    else:
+        return "0.0%"
 
 
 def fetch_api_or_fallback(
@@ -86,7 +131,10 @@ def fetch_api_or_fallback(
     return data, "Local Engine Direct Fallback (API offline - 0 live data fabricated)"
 
 
-def load_local_risk_signals(provenance: str = "synthetic") -> List[Dict[str, Any]]:
+def load_local_risk_signals(
+    provenance: str = "synthetic",
+    limit: Optional[int] = 500,
+) -> List[Dict[str, Any]]:
     """Load risk signals directly from processed CSV files based on requested provenance."""
     signals: List[Dict[str, Any]] = []
     prov_clean = (provenance or "synthetic").lower().strip()
@@ -115,6 +163,9 @@ def load_local_risk_signals(provenance: str = "synthetic") -> List[Dict[str, Any
                     if rid:
                         seen_ids.add(rid)
                     signals.append(r)
+
+    if limit is not None and len(signals) > limit:
+        signals = signals[:limit]
 
     return signals
 
@@ -195,9 +246,9 @@ def main():
     st.caption("AI-Powered Financial Risk Engine & Strategic Portfolio Stress Testing")
 
     st.warning(
-        "⚠️ **PROTOTYPE DEMONSTRATION NOTICE**: All datasets, news articles, social posts, portfolio assets, and "
-        "stress parameters are **synthetic**. Risk scores and classifications are provisional rule-based heuristics. "
-        "Simulated losses are sensitivity approximations, not calibrated market predictions."
+        "⚠️ **PROTOTYPE DEMONSTRATION NOTICE**: Synthetic feeds and portfolio holdings are simulated for demonstration. "
+        "When 'Real Public Financial News' is active, genuine public regulatory articles (Fed, SEC, ECB) are ingested. "
+        "Impact scores and stress tests are uncalibrated decision-support sensitivity approximations, not econometric predictions."
     )
 
     # Check API status
@@ -223,6 +274,16 @@ def main():
         prov_param = "synthetic"
 
     st.sidebar.divider()
+    st.sidebar.subheader("High-Impact Alerts")
+    alert_threshold = st.sidebar.slider(
+        "Alert Impact Threshold (> X):",
+        min_value=1,
+        max_value=9,
+        value=DEFAULT_HIGH_IMPACT_THRESHOLD,
+        step=1,
+        help="Flags events with impact scores strictly greater than this threshold (default > 7 as per problem specification).",
+    )
+    st.sidebar.divider()
 
     # Tabs
     tab_risk, tab_stress, tab_about = st.tabs([
@@ -237,9 +298,10 @@ def main():
         st.caption(f"Active Signal Stream: **{feed_mode}**")
 
         raw_signals, source_info = fetch_api_or_fallback(
-            f"/risk-signals?provenance={prov_param}",
+            f"/risk-signals?provenance={prov_param}&limit=500",
             load_local_risk_signals,
             provenance=prov_param,
+            limit=500,
         )
 
         loaded_signals = raw_signals.get("signals", []) if isinstance(raw_signals, dict) else raw_signals
@@ -301,6 +363,34 @@ def main():
             else:
                 st.info("No risk signals found.")
         else:
+            # High-Impact Event Alerts (Hackathon Stage 2)
+            high_impact_alerts = detect_high_impact_alerts(signals, threshold=alert_threshold)
+            if high_impact_alerts:
+                st.error(
+                    f"🚨 **High-Impact Event Alert ({len(high_impact_alerts)} Detected with Impact Score > {alert_threshold})**"
+                )
+                with st.expander(f"⚠️ View {len(high_impact_alerts)} High-Impact Risk Alert(s)", expanded=True):
+                    for alert in high_impact_alerts:
+                        with st.container(border=True):
+                            c_ev1, c_ev2, c_ev3 = st.columns([2.5, 1, 1.5])
+                            with c_ev1:
+                                st.markdown(f"**Event Category:** `{alert.event_category}` | **Source:** `{alert.source}`")
+                                st.markdown(f"**Timestamp:** `{alert.published_at}`")
+                                st.markdown(f"**Summary:** *{alert.summary_text}*")
+                            with c_ev2:
+                                st.metric("Impact Score", f"{alert.impact_score}/10")
+                                st.caption(f"Sentiment: **{alert.sentiment_label}** ({alert.sentiment_score:+.2f})")
+                            with c_ev3:
+                                if alert.is_stress_test_applicable and alert.recommended_scenario_id:
+                                    st.info(f"**Recommended Scenario:**\n`{alert.recommended_scenario_name}`")
+                                    st.caption(f"**Rationale:** {alert.mapping_rationale}")
+                                    st.caption("🔒 *Requires explicit user confirmation.*")
+                                    if st.button("👉 Stage for Stress Test", key=f"stage_alert_{alert.record_id}"):
+                                        st.session_state["selected_scenario_key"] = alert.recommended_scenario_id
+                                        st.success(f"Staged '{alert.recommended_scenario_name}'. Switch to Tab 2 to confirm & execute.")
+                                else:
+                                    st.warning(f"**No Preconfigured Macro Scenario**\n{alert.mapping_rationale}")
+
             # Metrics
             total_signals = len(signals)
             avg_impact = sum(int(s.get("impact_score", 0)) for s in signals) / total_signals if total_signals else 0.0
@@ -477,9 +567,20 @@ def main():
 
                     st.divider()
                     c1, c2, c3 = st.columns(3)
-                    c1.metric("Stressed Valuation", f"${stressed_val:,.2f}", delta=f"-${abs_loss:,.2f}", delta_color="inverse")
-                    c2.metric("Simulated Absolute Loss", f"${abs_loss:,.2f}")
-                    c3.metric("Simulated Percentage Loss", f"-{pct_loss}%")
+                    c1.metric(
+                        "Stressed Valuation",
+                        f"${stressed_val:,.2f}",
+                        delta=format_pnl_currency(abs_loss),
+                        delta_color="inverse",
+                    )
+                    c2.metric(
+                        "Simulated Absolute P&L" if abs_loss < 0 else "Simulated Absolute Loss",
+                        f"+${abs(abs_loss):,.2f}" if abs_loss < 0 else f"${abs_loss:,.2f}",
+                    )
+                    c3.metric(
+                        "Simulated Percentage P&L" if pct_loss < 0 else "Simulated Percentage Loss",
+                        format_pnl_percentage(pct_loss),
+                    )
 
                     # Loss contribution chart
                     asset_res = test_res.get("asset_results", [])
@@ -508,8 +609,8 @@ def main():
                             "Type": a.get("asset_type"),
                             "Base Value": f"${a.get('baseline_value'):,.2f}",
                             "Stressed Value": f"${a.get('stressed_value'):,.2f}",
-                            "Loss ($)": f"-${a.get('absolute_loss'):,.2f}",
-                            "Loss (%)": f"-{a.get('percentage_loss')}%",
+                            "Loss ($)": format_pnl_currency(a.get("absolute_loss", 0.0)),
+                            "Loss (%)": format_pnl_percentage(a.get("percentage_loss", 0.0)),
                             "Loss Contrib": f"{a.get('loss_contribution_pct')}%",
                             "Method": a.get("valuation_method"),
                         }

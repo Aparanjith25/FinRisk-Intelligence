@@ -134,6 +134,8 @@ def run_public_news_pipeline(
         print(f"  Event:       {sample['event_type']}")
         print(f"  Sentiment:   {sample['sentiment_label']} (Score: {sample['sentiment_score']:.2f})")
         print(f"  Impact:      {sample['impact_score']}/10")
+        print(f"  Inference:   {sample.get('inference_source', 'unknown')}")
+        print(f"  Provenance:  {sample.get('provenance', 'unknown')}")
         print(f"  Rationale:   {sample['scoring_rationale']}")
         print(f"  Text Excerpt:{sample['text'][:120]}...")
     print("=" * 65)
@@ -144,13 +146,113 @@ def run_public_news_pipeline(
     }
 
 
+def reprocess_existing_public_records(
+    news_csv_path: Path,
+    signals_csv_path: Path,
+) -> dict:
+    """Reprocess previously stored public news records through FinBERT."""
+    print("=" * 65)
+    print("FINRISK INTELLIGENCE: REPROCESSING STORED PUBLIC NEWS WITH FINBERT")
+    print("=" * 65)
+    if not news_csv_path.exists():
+        print(f"[!] Stored public news CSV not found at: {news_csv_path}")
+        return {"error": "Missing input file"}
+
+    print(f"\n[1] Processing stored public articles from: {news_csv_path}")
+    analyzer = FinBERTSentimentAnalyzer()
+    classifier = RuleBasedEventClassifier()
+    engine = RiskEngine(sentiment_analyzer=analyzer, event_classifier=classifier)
+
+    signals = engine.process_csv(input_csv=news_csv_path, output_csv=signals_csv_path)
+    print(f"    Saved {len(signals)} FinBERT risk signals to: {signals_csv_path}")
+
+    # Summary
+    event_counts: dict[str, int] = {}
+    sentiment_counts: dict[str, int] = {}
+    inference_counts: dict[str, int] = {}
+    impact_scores: list[int] = []
+
+    for sig in signals:
+        ev = sig["event_type"]
+        sl = sig["sentiment_label"]
+        im = sig["impact_score"]
+        src = sig.get("inference_source", "unknown")
+        event_counts[ev] = event_counts.get(ev, 0) + 1
+        sentiment_counts[sl] = sentiment_counts.get(sl, 0) + 1
+        inference_counts[src] = inference_counts.get(src, 0) + 1
+        impact_scores.append(im)
+
+    avg_impact = round(sum(impact_scores) / len(impact_scores), 2) if impact_scores else 0.0
+
+    print("\n" + "=" * 65)
+    print("PUBLIC NEWS RISK SIGNALS SUMMARY (FINBERT REFRESH)")
+    print("=" * 65)
+    print(f"  Total Signals Generated: {len(signals)}")
+    print(f"  Average Impact Score:    {avg_impact} / 10")
+    print("\n  Inference Source Breakdown:")
+    for inf, count in sorted(inference_counts.items(), key=lambda x: x[1], reverse=True):
+        print(f"    - {inf:25s}: {count}")
+    print("\n  Event Category Distribution:")
+    for cat, count in sorted(event_counts.items(), key=lambda x: x[1], reverse=True):
+        print(f"    - {cat:22s}: {count}")
+    print("\n  Sentiment Class Distribution:")
+    for label, count in sorted(sentiment_counts.items(), key=lambda x: x[1], reverse=True):
+        print(f"    - {label:12s}: {count}")
+
+    print("\n" + "=" * 65)
+    print("SAMPLE REAL PUBLIC ARTICLE RISK SIGNAL")
+    print("=" * 65)
+    if signals:
+        sample = signals[0]
+        print(f"  ID:          {sample['record_id']}")
+        print(f"  Source:      {sample['source']}")
+        print(f"  Published:   {sample['published_at']}")
+        print(f"  URL:         {sample['url']}")
+        print(f"  Event:       {sample['event_type']}")
+        print(f"  Sentiment:   {sample['sentiment_label']} (Score: {sample['sentiment_score']:.2f})")
+        print(f"  Impact:      {sample['impact_score']}/10")
+        print(f"  Inference:   {sample.get('inference_source', 'unknown')}")
+        print(f"  Provenance:  {sample.get('provenance', 'unknown')}")
+        print(f"  Rationale:   {sample['scoring_rationale']}")
+        print(f"  Text Excerpt:{sample['text'][:120]}...")
+    print("=" * 65)
+
+    return {
+        "signals_count": len(signals),
+        "inference_sources": inference_counts,
+    }
+
+
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Fetch public financial news and generate risk signals with FinBERT.")
+    parser.add_argument(
+        "--reprocess-only",
+        action="store_true",
+        help="Reprocess existing public_news_records.csv with FinBERT without re-fetching RSS feeds.",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=10,
+        help="HTTP request timeout in seconds.",
+    )
+    args = parser.parse_args()
+
     cfg_file = PROJECT_ROOT / "configs" / "public_feeds.yaml"
     news_out = PROJECT_ROOT / "data" / "processed" / "public_news_records.csv"
     signals_out = PROJECT_ROOT / "data" / "processed" / "public_risk_signals.csv"
 
-    run_public_news_pipeline(
-        config_path=cfg_file,
-        news_csv_path=news_out,
-        signals_csv_path=signals_out,
-    )
+    if args.reprocess_only:
+        reprocess_existing_public_records(
+            news_csv_path=news_out,
+            signals_csv_path=signals_out,
+        )
+    else:
+        run_public_news_pipeline(
+            config_path=cfg_file,
+            news_csv_path=news_out,
+            signals_csv_path=signals_out,
+            timeout=args.timeout,
+        )

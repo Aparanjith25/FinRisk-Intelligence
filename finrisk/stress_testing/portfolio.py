@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
-VALID_ASSET_TYPES = ("equity", "corporate_bond", "government_bond", "loan")
+VALID_ASSET_TYPES = ("equity", "corporate_bond", "government_bond", "loan", "derivative")
 
 
 @dataclass
@@ -23,13 +23,16 @@ class PortfolioAsset:
 
     asset_id: str
     asset_name: str
-    asset_type: str  # equity, corporate_bond, government_bond, loan
+    asset_type: str  # equity, corporate_bond, government_bond, loan, derivative
     market_value: float  # Current baseline value (must be > 0)
-    duration: Optional[float] = None  # Modified/Macaulay duration in years (for bonds)
+    duration: Optional[float] = None  # Modified/Macaulay duration in years (for bonds/swaps)
     credit_rating: Optional[str] = None  # Credit rating (e.g. AAA, BBB, BB)
     spread_bps: Optional[float] = 0.0  # Credit spread in basis points (for corporate bonds)
     baseline_pd: Optional[float] = None  # Baseline 1-year probability of default [0.0, 1.0]
     lgd: Optional[float] = None  # Loss given default [0.0, 1.0]
+    notional: Optional[float] = None  # Underlying contract notional (for derivatives)
+    pay_receive: Optional[str] = None  # 'pay_fixed' or 'receive_fixed' (for interest rate swaps)
+    dv01: Optional[float] = None  # Dollar Value of an 01 ($/basis point rate shift)
     sector: Optional[str] = None
     company: Optional[str] = None
     is_synthetic: bool = True
@@ -149,6 +152,36 @@ def validate_asset_row(row: Dict[str, Any], row_idx: int = 1) -> PortfolioAsset:
         if lgd is None:
             lgd = 0.45  # 45% standard bank LGD default
 
+    # Derivatives (Interest Rate Swaps): parse notional, pay_receive, and dv01
+    notional = parse_float_safely(row.get("notional"))
+    if notional is not None and notional <= 0:
+        raise ValueError(f"Row {row_idx}: 'notional' must be strictly positive (> 0), got {notional}")
+
+    raw_pr = str(row.get("pay_receive", "")).strip().lower()
+    pay_receive: Optional[str] = raw_pr or None
+    if pay_receive is not None and pay_receive not in ("pay_fixed", "receive_fixed", "payer", "receiver"):
+        raise ValueError(
+            f"Row {row_idx}: Invalid 'pay_receive' '{pay_receive}'. Expected 'pay_fixed' or 'receive_fixed'"
+        )
+    if pay_receive in ("payer",):
+        pay_receive = "pay_fixed"
+    elif pay_receive in ("receiver",):
+        pay_receive = "receive_fixed"
+
+    dv01 = parse_float_safely(row.get("dv01"))
+    if dv01 is not None and dv01 < 0:
+        raise ValueError(f"Row {row_idx}: 'dv01' cannot be negative, got {dv01}")
+
+    if asset_type == "derivative":
+        if duration is None:
+            duration = 4.2  # 5Y swap standard DV01 duration default
+        if notional is None:
+            notional = market_value * 10.0  # 10x leverage standard for collateralized IRS default
+        if pay_receive is None:
+            pay_receive = "pay_fixed"  # Default to pay-fixed macro rate hedge for wholesale bank
+        if dv01 is None:
+            dv01 = round(notional * duration * 0.0001, 2)
+
     credit_rating = str(row.get("credit_rating", "")).strip() or None
     sector = str(row.get("sector", "")).strip() or None
     company = str(row.get("company", "")).strip() or None
@@ -166,6 +199,9 @@ def validate_asset_row(row: Dict[str, Any], row_idx: int = 1) -> PortfolioAsset:
         spread_bps=spread_bps or 0.0,
         baseline_pd=baseline_pd,
         lgd=lgd,
+        notional=notional,
+        pay_receive=pay_receive,
+        dv01=dv01,
         sector=sector,
         company=company,
         is_synthetic=is_synthetic,

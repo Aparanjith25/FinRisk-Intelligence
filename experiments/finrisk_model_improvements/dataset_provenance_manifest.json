@@ -1,0 +1,68 @@
+{
+  "manifest_version": "1.0.0",
+  "created_at": "2026-10-18T02:00:00Z",
+  "project": "FinRisk Intelligence",
+  "datasets": [
+    {
+      "name": "Financial PhraseBank (AllAgree)",
+      "citation": "Malo, P., Sinha, A., Korhonen, P., Wallenius, J., & Takala, P. (2014). Good debt or bad debt: Detecting semantic orientations in economic texts. JASIST.",
+      "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)",
+      "source_url": "https://huggingface.co/datasets/takala/financial_phrasebank",
+      "total_samples": 2264,
+      "splits": {
+        "train": 1585,
+        "dev": 340,
+        "test": 339
+      },
+      "classes": {
+        "neutral": 1391,
+        "positive": 570,
+        "negative": 303
+      },
+      "domain": "Nordic corporate earnings releases, quarterly financial reports, revenue/profit metrics, and dividend declarations.",
+      "upstream_pretraining_relation": "CONFIRMED NON-INDEPENDENT: ProsusAI/finbert (Araci, 2019) was fine-tuned on Financial PhraseBank during its initial publication.",
+      "leakage_status": "Strictly isolated stratified splits (seed 42). Near-duplicate leakage is < 0.3%."
+    },
+    {
+      "name": "Twitter Financial News Sentiment (TFNS)",
+      "citation": "zeroshot/twitter-financial-news-sentiment (Hugging Face Datasets)",
+      "license": "Public Research / Open Data",
+      "source_url": "https://huggingface.co/datasets/zeroshot/twitter-financial-news-sentiment",
+      "total_samples": 11932,
+      "splits": {
+        "train": 9544,
+        "valid": 2388
+      },
+      "classes": {
+        "bearish_negative_0": 1789,
+        "bullish_positive_1": 2398,
+        "neutral_2": 7744
+      },
+      "domain": "Financial news headlines, market tweets, equity price actions, and credit rating agency actions.",
+      "regulatory_coverage": "Limited: Contains market credit adjustments (e.g. Moody's downgrades), but lacks formal regulatory enforcement and central bank speeches."
+    },
+    {
+      "name": "Curated Regulatory Risk Benchmark",
+      "citation": "FinRisk Intelligence Human-Curated Regulatory Dataset (tests/evaluation/annotated_news_sample.py)",
+      "license": "Internal Project Benchmark (Public Domain Source Documents: US Federal Reserve, SEC, ECB)",
+      "source_url": "https://www.federalreserve.gov/newsevents/pressreleases.htm, https://www.sec.gov/news/pressreleases, https://www.ecb.europa.eu/press/html/index.en.html",
+      "total_samples": 30,
+      "splits": {
+        "dev": 22,
+        "held_out_ecb": 8
+      },
+      "classes": {
+        "neutral": 12,
+        "negative": 10,
+        "positive": 8
+      },
+      "domain": "Central bank monetary policy announcements (interest rate hikes/cuts, quantitative tightening), Federal Reserve bank enforcement actions, SEC securities fraud litigation, and ECB executive speeches.",
+      "usage_status": "STRICTLY HELD-OUT: Never used for model training, tuning, or weight selection (Safety Rule 9)."
+    }
+  ],
+  "regulatory_training_data_assessment": {
+    "status": "INSUFFICIENT_FOR_SUPERVISED_TRAINING",
+    "required_volume": "500 - 1,000 human-annotated regulatory & enforcement sentences",
+    "rationale": "Transferring a 110M parameter transformer model to legal/regulatory language requires enough support in both positive and negative classes to avoid catastrophic domain forgetting. The 30 benchmark examples must remain strictly held out as an evaluation suite."
+  }
+}

@@ -3,11 +3,20 @@
 **AI-Powered Financial Risk Engine & Strategic Portfolio Stress Testing**  
 *Developed for the S&P Global & CRISIL Campus Hackathon*
 
-[![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.11%20%7C%203.13-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
 [![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B.svg)](https://streamlit.io/)
-[![Tests Passing](https://img.shields.io/badge/tests-129%20passed%20%7C%204%20skipped-brightgreen.svg)](tests/)
+[![Tests Passing](https://img.shields.io/badge/tests-147%20passed%20%7C%200%20failed-brightgreen.svg)](tests/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+> **Submission Metadata Placeholders**  
+> • **Candidate Name:** `[Ramisetty Aparanjith]`  
+> • **Official Email:** `[23je0787@iitism.ac.in]`  
+> • **Institution / College:** `[IIT ISM Dhanbad]`  
+> • **Public GitHub Repository:** `[https://github.com/Aparanjith25/FinRisk-Intelligence]`  
+> • **Unlisted Demonstration Video:** `[https://youtu.be/hfqHQLqod7w]`  
+> • **Presentation Slide Deck:** [`docs/presentation.pdf`](docs/presentation.pdf)  
+> • **Architecture Diagram:** [`docs/architecture.png`](docs/architecture.png)  
 
 ---
 
@@ -20,11 +29,13 @@
 2. **AI/NLP Risk Engine:** Financial sentiment analysis mapped to continuous scores in `[-1.0, 1.0]`, rule-based financial event classification across 6 categories, and explainable integer impact scoring (`1` to `10`) with full audit rationales.
 3. **Strategic Portfolio Stress Testing:** Multi-asset valuation sensitivity approximations across Equities, Government Bonds, Corporate Bonds, and Loans under preconfigured macroeconomic, geopolitical, and credit shock scenarios.
 4. **REST API & Interactive Dashboard:** Production-ready FastAPI microservice with OpenAPI documentation and an interactive Streamlit analytics dashboard supporting dual-stream data exploration and local fallback execution.
-5. **Honest AI & Offline Reliability:** 133 collected tests (129 passing offline, 4 live FinBERT tests cleanly skipped in the primary environment) with zero external network dependencies, transparent metadata labeling (`offline_fallback_baseline` vs. `pretrained_transformers`), and explicit non-fabrication guarantees.
+5. **Honest AI & Comprehensive Verification:** 147 collected tests passing with 100% pass rate: 143 offline tests passing without external network dependencies, and all 147 tests passing when optional deep-learning dependencies (`torch`, `transformers`) are enabled for live ProsusAI/FinBERT inference. Transparent metadata labeling (`offline_fallback_baseline`, `offline_injected_mock`, vs. `pretrained_transformers`) provides explicit non-fabrication guarantees.
 
 ---
 
 ## 🏗️ Architecture & Directory Layout
+
+![FinRisk Intelligence System Architecture](docs/architecture.png)
 
 ```text
 FinRisk-Intelligence/
@@ -42,9 +53,12 @@ FinRisk-Intelligence/
 │       ├── sample_portfolio.csv
 │       └── sample_social_posts.csv
 ├── docs/                           # Submission & demonstration materials
+│   ├── architecture.png            # High-resolution 2K system architecture diagram
+│   ├── presentation.pdf            # 7-slide final hackathon presentation deck
 │   ├── demo_walkthrough.md         # 5-minute live pitch & 15-minute recorded demo scripts
 │   ├── github_readiness_checklist.md # Final GitHub readiness & secrets audit checklist
-│   └── presentation_outline.md     # 5–7 slide presentation outline for jury review
+│   ├── presentation_outline.md     # 5–7 slide presentation outline for jury review
+│   └── final_acceptance_audit.md   # Complete end-to-end audit report (PASS WITH LIMITATIONS)
 ├── finrisk/                        # Core Python application package
 │   ├── api/                        # FastAPI service layer
 │   │   └── main.py
@@ -88,22 +102,31 @@ FinRisk-Intelligence/
 # 1. Clone repository (or navigate to workspace)
 cd FinRisk-Intelligence
 
-# 2. Create Python 3.11 virtual environment
-py -3.11 -m venv .venv
+# 2. Create Python virtual environment (Python >=3.11, e.g. 3.11 or 3.13)
+python -m venv .venv
 
 # 3. Activate virtual environment
 .\.venv\Scripts\Activate.ps1
 
-# 4. Install core dependencies
+# 4. Install core dependencies (lightweight offline mode)
 pip install -r requirements.txt
+pip install -e .
+
+# Optional: Install deep learning stack for live ProsusAI/FinBERT inference
+# (Requires system with >4 GB RAM and >2 GB free disk)
+pip install -r requirements-finbert.txt
 ```
 
 ### 2. Run Test Suite
-The entire test suite executes **100% offline** without model downloads or internet connectivity:
+The test suite adapts automatically to installed dependencies:
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -v
 ```
-*Expected Result:* `129 passed, 4 skipped in ~18.5s` (4 live FinBERT inference tests cleanly skipped in the primary environment).
+* **Full Environment (with `torch` & `transformers`):** `147 passed in ~41s` (All 147 unit, integration, evaluation, alert, derivative valuation, and live FinBERT inference tests pass).
+* **Lightweight Offline Environment:** `143 passed, 4 skipped in ~25s` (The 4 live FinBERT neural inference tests are cleanly skipped when PyTorch/Transformers are omitted).
+
+> **Note on Fresh Clones & Data Reproduction:**  
+> Processed public regulatory records are intentionally excluded from git tracking to prevent stale data bloat. After cloning a fresh repository, run `python scripts/fetch_public_news.py` to ingest and score the latest live public articles from the Federal Reserve, SEC, and ECB. Synthetic demo records (`data/sample/`) are fully version-controlled and immediately functional.
 
 ### 3. Run Pipeline Batch Scripts
 ```powershell
@@ -149,13 +172,14 @@ Interactive dashboard will open in your browser at: **`http://localhost:8501`**
 * **Response:**
   ```json
   {
-    "asset_count": 9,
-    "total_market_value": 16000000.0,
+    "asset_count": 10,
+    "total_market_value": 17000000.0,
     "asset_type_distribution": {
-      "equity": 4500000.0,
-      "corporate_bond": 4000000.0,
-      "government_bond": 3500000.0,
-      "loan": 4000000.0
+      "equity": 5500000.0,
+      "corporate_bond": 3000000.0,
+      "government_bond": 5000000.0,
+      "loan": 2500000.0,
+      "derivative": 1000000.0
     }
   }
   ```
@@ -195,10 +219,10 @@ Interactive dashboard will open in your browser at: **`http://localhost:8501`**
     "scenario_id": "macroeconomic_stagflation",
     "scenario_name": "Macroeconomic Stagflation & Rate Spike",
     "category": "Macroeconomic",
-    "baseline_portfolio_value": 16000000.0,
-    "stressed_portfolio_value": 14330740.0,
-    "total_absolute_loss": 1669260.0,
-    "total_percentage_loss": 10.43,
+    "baseline_portfolio_value": 17000000.0,
+    "stressed_portfolio_value": 15960740.0,
+    "total_absolute_loss": 1039260.0,
+    "total_percentage_loss": 6.11,
     "asset_results": [
       {
         "asset_id": "EQ_001",
@@ -208,8 +232,19 @@ Interactive dashboard will open in your browser at: **`http://localhost:8501`**
         "stressed_value": 2125000.0,
         "absolute_loss": 375000.0,
         "percentage_loss": 15.0,
-        "loss_contribution_pct": 22.47,
+        "loss_contribution_pct": 36.08,
         "valuation_method": "Equity Price Shock: V_stressed = V_base * (1 + shock_pct)"
+      },
+      {
+        "asset_id": "SW_001",
+        "asset_name": "5Y Interest Rate Swap (Pay-Fixed Macro Hedge)",
+        "asset_type": "derivative",
+        "baseline_value": 1000000.0,
+        "stressed_value": 1630000.0,
+        "absolute_loss": -630000.0,
+        "percentage_loss": -63.0,
+        "loss_contribution_pct": -60.62,
+        "valuation_method": "Linear DV01 Swap Pricing: V_stressed = V_base + (DV01_$ * dy_rates_bps)"
       }
     ],
     "disclaimer": "Simulated stress test results are deterministic valuation approximations..."
@@ -252,6 +287,7 @@ Portfolio shocks are computed across four distinct asset classes using mathemati
 | **Government Bonds** | $V_{\text{stressed}} = V_{\text{base}} \times (1 - D_{\text{mod}} \times \Delta y_{\text{rates}})$ | Modified duration ($D_{\text{mod}}$), Sovereign yield shock ($\Delta y_{\text{rates}}$) |
 | **Corporate Bonds** | $V_{\text{stressed}} = V_{\text{base}} \times (1 - D_{\text{mod}} \times (\Delta y_{\text{rates}} + \Delta s_{\text{spread}}))$ | Modified duration ($D_{\text{mod}}$), Rates shift ($\Delta y$), Credit spread widening ($\Delta s$) |
 | **Loans** | $V_{\text{stressed}} = V_{\text{base}} \times (1 - (\text{PD} \times \text{LGD} \times (1 + \Delta_{\text{loan\_loss}})))$ | Baseline default probability ($\text{PD}$), Loss given default ($\text{LGD}$), Loss multiplier |
+| **Interest Rate Swap (Pay-Fixed)** | $V_{\text{stressed}} = V_{\text{base}} + (\text{DV01}_{\$} \times \Delta y_{\text{rates, bps}})$ | Dollar DV01 ($\text{DV01}_{\$}$), Basis point rate shift ($\Delta y_{\text{rates, bps}}$) |
 
 ### Portfolio Loss Consistency
 - **Absolute Portfolio Loss:** $\Delta V = \sum_{i} V_{\text{base}, i} - \sum_{i} V_{\text{stressed}, i}$
@@ -259,11 +295,11 @@ Portfolio shocks are computed across four distinct asset classes using mathemati
 - **Asset Loss Contribution:** $\text{Contribution}_i = \frac{\Delta V_i}{\Delta V} \times 100\%$
 - **Verification Guarantee:** $\sum_{i} \text{Contribution}_i \equiv 100.0\%$, verified across all scenarios.
 
-### Preconfigured Macro Stress Scenarios
-- **Geopolitical Escalation & Trade Shock:** Equity -18%, Rates +50 bps, Spreads +120 bps, Loan loss +25% $\rightarrow$ **-8.62% portfolio loss ($1,378,568.75)**.
-- **Macroeconomic Stagflation & Rate Spike:** Equity -15%, Rates +200 bps, Spreads +150 bps, Loan loss +20% $\rightarrow$ **-10.43% portfolio loss ($1,669,260.00)**.
-- **Severe Credit Crunch & Spread Widening:** Equity -12%, Rates -50 bps, Spreads +300 bps, Loan loss +60% $\rightarrow$ **-9.21% portfolio loss ($1,473,393.75)**.
-- **Mild Recessionary Cooling:** Equity -5%, Rates -75 bps, Spreads +50 bps, Loan loss +10% $\rightarrow$ **-1.95% portfolio loss ($312,406.25)**.
+### Preconfigured Macro Stress Scenarios ($17.0M Wholesale Portfolio)
+- **Geopolitical Escalation & Trade Shock:** Equity -18%, Rates +50 bps, Spreads +120 bps, Loan loss +25% $\rightarrow$ **-7.12% portfolio loss ($1,210,568.75)**.
+- **Macroeconomic Stagflation & Rate Spike:** Equity -15%, Rates +150 bps, Spreads +100 bps, Loan loss +20% $\rightarrow$ **-6.11% portfolio loss ($1,039,260.00)**.
+- **Severe Credit Crunch & Spread Widening:** Equity -12%, Rates -50 bps, Spreads +300 bps, Loan loss +60% $\rightarrow$ **-9.67% portfolio loss ($1,643,393.75)**.
+- **Mild Recessionary Cooling:** Equity -5%, Rates -50 bps, Spreads +30 bps, Loan loss +10% $\rightarrow$ **-2.31% portfolio loss ($392,406.25)**.
 
 ---
 
@@ -296,9 +332,12 @@ FinRisk Intelligence supports two distinct, isolated data streams:
 ---
 
 ## 📁 Submission Materials & Presentation Resources
-
-- **Presentation Slide Outline:** [`docs/presentation_outline.md`](docs/presentation_outline.md) — Suggested 5–7 slide pitch outline tailored for hackathon jury evaluation.
+ 
+- **Presentation Slide Deck (7 Slides):** [`docs/presentation.pdf`](docs/presentation.pdf) — Complete 7-slide pitch deck tailored for hackathon jury evaluation.
+- **System Architecture Diagram (2K High-Res):** [`docs/architecture.png`](docs/architecture.png) — End-to-end pipeline architecture diagram distinguishing real public data from synthetic fixtures.
+- **Presentation Slide Outline:** [`docs/presentation_outline.md`](docs/presentation_outline.md) — 5–7 slide pitch narrative script.
 - **Demonstration Walkthrough Scripts:** [`docs/demo_walkthrough.md`](docs/demo_walkthrough.md) — 5-minute live demonstration script and 15-minute recorded technical walkthrough.
+- **End-to-End Acceptance Audit Report:** [`docs/final_acceptance_audit.md`](docs/final_acceptance_audit.md) — Complete audit report with verified test traces, math proofs, and transparent disclosures.
 - **GitHub Readiness Checklist:** [`docs/github_readiness_checklist.md`](docs/github_readiness_checklist.md) — Pre-submission verification covering data files, dependencies, `.gitignore`, and zero-secrets audit.
 
 ---

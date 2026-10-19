@@ -1,0 +1,13 @@
+{
+  "status": "COMPATIBILITY_VERIFIED",
+  "checkpoint": "C:\\FinRisk-Intelligence\\experiments\\finbert_finetuning\\best_checkpoint",
+  "label_mapping": {
+    "0": "positive",
+    "1": "negative",
+    "2": "neutral"
+  },
+  "bounds_verified": true,
+  "edge_cases_handled": true,
+  "downstream_semantics_preserved": true,
+  "production_untouched": true
+}

@@ -191,3 +191,25 @@ def test_event_classifier_refined_patterns_regression():
     # Granted key patents
     res_prod = classifier.classify("Biopharma company was granted key patents for antibody therapies.")
     assert res_prod.category == "Product Launch"
+
+
+def test_event_classifier_fomc_and_credit_distress_patterns():
+    """Verify FOMC, banking supervision, credit distress, and proper retention of Other."""
+    classifier = RuleBasedEventClassifier()
+
+    # FOMC / Federal Open Market Committee minutes
+    res_fomc = classifier.classify("Minutes of the Federal Open Market Committee, September 15-16, 2026.")
+    assert res_fomc.category == "Macroeconomic"
+    assert any("fomc" in k or "federal open market committee" in k for k in res_fomc.matched_keywords)
+
+    # Banking supervision and financial stability
+    res_stab = classifier.classify("ECB published biannual financial stability report covering banking supervision.")
+    assert res_stab.category == "Macroeconomic"
+
+    # Accounting fraud and covenant violations under Credit Event
+    res_fraud = classifier.classify("Corporate borrower entered debt distress following accounting fraud and covenant violations.")
+    assert res_fraud.category == "Credit Event"
+
+    # SEC administrative outreach should remain 'Other' and not be misclassified as Geopolitical
+    res_other = classifier.classify("SEC to Host Virtual National Compliance Outreach Seminar for Investment Advisers.")
+    assert res_other.category == "Other"

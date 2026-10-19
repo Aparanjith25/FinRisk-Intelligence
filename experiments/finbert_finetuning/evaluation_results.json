@@ -1,0 +1,856 @@
+{
+  "models": {
+    "Model A": {
+      "name": "Pretrained ProsusAI/finbert",
+      "type": "HuggingFace Pretrained Transformer"
+    },
+    "Model B": {
+      "name": "Deterministic Baseline",
+      "type": "Lexicon Heuristic Fallback"
+    },
+    "Model C": {
+      "name": "Fine-Tuned FinBERT",
+      "type": "Domain Fine-Tuned Transformer",
+      "checkpoint": "C:\\FinRisk-Intelligence\\experiments\\finbert_finetuning\\best_checkpoint",
+      "parameters": 109484547,
+      "size_mb": 418.35
+    }
+  },
+  "datasets": {
+    "phrasebank_test": {
+      "description": "Held-out 15% test split of Financial PhraseBank (AllAgree)",
+      "samples": 339
+    },
+    "regulatory_benchmark_all": {
+      "description": "Human-annotated Regulatory Benchmark (Fed, SEC, ECB)",
+      "samples": 30
+    },
+    "regulatory_benchmark_dev": {
+      "description": "Regulatory Benchmark Dev Subset (Fed, SEC)",
+      "samples": 22
+    },
+    "regulatory_benchmark_heldout_ecb": {
+      "description": "Regulatory Benchmark Held-out Subset (ECB)",
+      "samples": 8
+    }
+  },
+  "results": {
+    "Model B (Baseline)": {
+      "phrasebank_test": {
+        "metrics": {
+          "n_samples": 339,
+          "accuracy": 0.6814,
+          "macro_f1": 0.4265,
+          "macro_precision": 0.4326,
+          "macro_recall": 0.4444,
+          "per_class": {
+            "positive": {
+              "precision": 0.5714,
+              "recall": 0.3765,
+              "f1": 0.4539,
+              "support": 85
+            },
+            "negative": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 46
+            },
+            "neutral": {
+              "precision": 0.7263,
+              "recall": 0.9567,
+              "f1": 0.8257,
+              "support": 208
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 32,
+              "negative": 8,
+              "neutral": 45
+            },
+            "negative": {
+              "positive": 16,
+              "negative": 0,
+              "neutral": 30
+            },
+            "neutral": {
+              "positive": 8,
+              "negative": 1,
+              "neutral": 199
+            }
+          }
+        },
+        "latency_ms": 0.01
+      },
+      "regulatory_benchmark_all": {
+        "metrics": {
+          "n_samples": 30,
+          "accuracy": 0.7,
+          "macro_f1": 0.6849,
+          "macro_precision": 0.7561,
+          "macro_recall": 0.6722,
+          "per_class": {
+            "positive": {
+              "precision": 0.8,
+              "recall": 0.5,
+              "f1": 0.6154,
+              "support": 8
+            },
+            "negative": {
+              "precision": 0.8571,
+              "recall": 0.6,
+              "f1": 0.7059,
+              "support": 10
+            },
+            "neutral": {
+              "precision": 0.6111,
+              "recall": 0.9167,
+              "f1": 0.7333,
+              "support": 12
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 4,
+              "negative": 0,
+              "neutral": 4
+            },
+            "negative": {
+              "positive": 1,
+              "negative": 6,
+              "neutral": 3
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 1,
+              "neutral": 11
+            }
+          }
+        },
+        "latency_ms": 0.02,
+        "disagreements": [
+          {
+            "text": "Federal Reserve Board announces enforcement action against American Express Comp...",
+            "gold": "negative",
+            "pred": "positive",
+            "confidence": 0.76,
+            "score": 0.71,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board issues enforcement action with Ontario Bancorporation, Inc...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.8,
+            "score": 0.0,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board finalizes changes to enhance transparency of stress test. ...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.8,
+            "score": 0.0,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board issues enforcement action with former employee of Sandy Sp...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.8,
+            "score": 0.0,
+            "correct": false
+          },
+          {
+            "text": "Agencies reduce regulatory burden for community banks, increase exam cycle eligi...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.8,
+            "score": 0.0,
+            "correct": false
+          },
+          {
+            "text": "SEC Coordinates with Global Financial Regulators to Raise Fraud Awareness During...",
+            "gold": "neutral",
+            "pred": "negative",
+            "confidence": 0.68,
+            "score": -0.63,
+            "correct": false
+          },
+          {
+            "text": "SEC Charges Registered Investment Adviser Zoe Financial for Failure to Disclose ...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.8,
+            "score": 0.0,
+            "correct": false
+          },
+          {
+            "text": "SEC Publishes Updated Market Statistics, Highlighting Increase in IPOs and Proce...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.8,
+            "score": 0.0,
+            "correct": false
+          },
+          {
+            "text": "Boris Vuj\u010di\u0107: Resilience, integration and competitiveness: building the future o...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.8,
+            "score": 0.0,
+            "correct": false
+          }
+        ]
+      },
+      "regulatory_benchmark_dev": {
+        "metrics": {
+          "n_samples": 22,
+          "accuracy": 0.6364,
+          "macro_f1": 0.6405,
+          "macro_precision": 0.696,
+          "macro_recall": 0.6534,
+          "per_class": {
+            "positive": {
+              "precision": 0.8,
+              "recall": 0.5714,
+              "f1": 0.6667,
+              "support": 7
+            },
+            "negative": {
+              "precision": 0.8333,
+              "recall": 0.5556,
+              "f1": 0.6667,
+              "support": 9
+            },
+            "neutral": {
+              "precision": 0.4545,
+              "recall": 0.8333,
+              "f1": 0.5882,
+              "support": 6
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 4,
+              "negative": 0,
+              "neutral": 3
+            },
+            "negative": {
+              "positive": 1,
+              "negative": 5,
+              "neutral": 3
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 1,
+              "neutral": 5
+            }
+          }
+        }
+      },
+      "regulatory_benchmark_heldout_ecb": {
+        "metrics": {
+          "n_samples": 8,
+          "accuracy": 0.875,
+          "macro_f1": 0.641,
+          "macro_precision": 0.619,
+          "macro_recall": 0.6667,
+          "per_class": {
+            "positive": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 1
+            },
+            "negative": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 1
+            },
+            "neutral": {
+              "precision": 0.8571,
+              "recall": 1.0,
+              "f1": 0.9231,
+              "support": 6
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 1
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 1,
+              "neutral": 0
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 6
+            }
+          }
+        }
+      }
+    },
+    "Model A (Pretrained FinBERT)": {
+      "phrasebank_test": {
+        "metrics": {
+          "n_samples": 339,
+          "accuracy": 0.9735,
+          "macro_f1": 0.9628,
+          "macro_precision": 0.9519,
+          "macro_recall": 0.9763,
+          "per_class": {
+            "positive": {
+              "precision": 0.9759,
+              "recall": 0.9529,
+              "f1": 0.9643,
+              "support": 85
+            },
+            "negative": {
+              "precision": 0.8846,
+              "recall": 1.0,
+              "f1": 0.9388,
+              "support": 46
+            },
+            "neutral": {
+              "precision": 0.9951,
+              "recall": 0.976,
+              "f1": 0.9854,
+              "support": 208
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 81,
+              "negative": 3,
+              "neutral": 1
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 46,
+              "neutral": 0
+            },
+            "neutral": {
+              "positive": 2,
+              "negative": 3,
+              "neutral": 203
+            }
+          }
+        },
+        "latency_ms": 41.33
+      },
+      "regulatory_benchmark_all": {
+        "metrics": {
+          "n_samples": 30,
+          "accuracy": 0.7667,
+          "macro_f1": 0.7548,
+          "macro_precision": 0.8772,
+          "macro_recall": 0.7333,
+          "per_class": {
+            "positive": {
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1": 0.6667,
+              "support": 8
+            },
+            "negative": {
+              "precision": 1.0,
+              "recall": 0.7,
+              "f1": 0.8235,
+              "support": 10
+            },
+            "neutral": {
+              "precision": 0.6316,
+              "recall": 1.0,
+              "f1": 0.7742,
+              "support": 12
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 4,
+              "negative": 0,
+              "neutral": 4
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 7,
+              "neutral": 3
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 12
+            }
+          }
+        },
+        "latency_ms": 46.54,
+        "disagreements": [
+          {
+            "text": "Federal Reserve Board announces approval of application by Isabella Bank Corpora...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.9064,
+            "score": 0.034,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board announces approval of application by Fleur Capital Corpora...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.9034,
+            "score": 0.0344,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board issues enforcement action with Ontario Bancorporation, Inc...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.7154,
+            "score": -0.2274,
+            "correct": false
+          },
+          {
+            "text": "SEC Proposes Expanding Securities Eligible for Cross Trading by Registered Funds...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.9078,
+            "score": 0.0466,
+            "correct": false
+          },
+          {
+            "text": "SEC Seeks Final Judgment Against Former Western Asset Co-CIO Ken Leech in Cherry...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.6535,
+            "score": -0.2597,
+            "correct": false
+          },
+          {
+            "text": "Boris Vuj\u010di\u0107: Resilience, integration and competitiveness: building the future o...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.7195,
+            "score": 0.2637,
+            "correct": false
+          },
+          {
+            "text": "Isabel Schnabel: Monetary policy in a world of overlapping shocks. Isabel Schnab...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.8499,
+            "score": -0.0193,
+            "correct": false
+          }
+        ]
+      },
+      "regulatory_benchmark_dev": {
+        "metrics": {
+          "n_samples": 22,
+          "accuracy": 0.7727,
+          "macro_f1": 0.7694,
+          "macro_precision": 0.8485,
+          "macro_recall": 0.7831,
+          "per_class": {
+            "positive": {
+              "precision": 1.0,
+              "recall": 0.5714,
+              "f1": 0.7273,
+              "support": 7
+            },
+            "negative": {
+              "precision": 1.0,
+              "recall": 0.7778,
+              "f1": 0.875,
+              "support": 9
+            },
+            "neutral": {
+              "precision": 0.5455,
+              "recall": 1.0,
+              "f1": 0.7059,
+              "support": 6
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 4,
+              "negative": 0,
+              "neutral": 3
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 7,
+              "neutral": 2
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 6
+            }
+          }
+        }
+      },
+      "regulatory_benchmark_heldout_ecb": {
+        "metrics": {
+          "n_samples": 8,
+          "accuracy": 0.75,
+          "macro_f1": 0.2857,
+          "macro_precision": 0.25,
+          "macro_recall": 0.3333,
+          "per_class": {
+            "positive": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 1
+            },
+            "negative": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 1
+            },
+            "neutral": {
+              "precision": 0.75,
+              "recall": 1.0,
+              "f1": 0.8571,
+              "support": 6
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 1
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 1
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 6
+            }
+          }
+        }
+      }
+    },
+    "Model C (Fine-Tuned FinBERT)": {
+      "phrasebank_test": {
+        "metrics": {
+          "n_samples": 339,
+          "accuracy": 0.9853,
+          "macro_f1": 0.9746,
+          "macro_precision": 0.9792,
+          "macro_recall": 0.9704,
+          "per_class": {
+            "positive": {
+              "precision": 0.9651,
+              "recall": 0.9765,
+              "f1": 0.9708,
+              "support": 85
+            },
+            "negative": {
+              "precision": 0.9773,
+              "recall": 0.9348,
+              "f1": 0.9556,
+              "support": 46
+            },
+            "neutral": {
+              "precision": 0.9952,
+              "recall": 1.0,
+              "f1": 0.9976,
+              "support": 208
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 83,
+              "negative": 1,
+              "neutral": 1
+            },
+            "negative": {
+              "positive": 3,
+              "negative": 43,
+              "neutral": 0
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 208
+            }
+          }
+        },
+        "latency_ms": 42.86
+      },
+      "regulatory_benchmark_all": {
+        "metrics": {
+          "n_samples": 30,
+          "accuracy": 0.6,
+          "macro_f1": 0.5556,
+          "macro_precision": 0.8333,
+          "macro_recall": 0.5667,
+          "per_class": {
+            "positive": {
+              "precision": 1.0,
+              "recall": 0.5,
+              "f1": 0.6667,
+              "support": 8
+            },
+            "negative": {
+              "precision": 1.0,
+              "recall": 0.2,
+              "f1": 0.3333,
+              "support": 10
+            },
+            "neutral": {
+              "precision": 0.5,
+              "recall": 1.0,
+              "f1": 0.6667,
+              "support": 12
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 4,
+              "negative": 0,
+              "neutral": 4
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 2,
+              "neutral": 8
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 12
+            }
+          }
+        },
+        "latency_ms": 51.43,
+        "disagreements": [
+          {
+            "text": "Federal Reserve Board announces enforcement action against American Express Comp...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.9321,
+            "score": -0.0428,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board announces approval of application by Isabella Bank Corpora...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.9936,
+            "score": 0.0024,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board announces approval of application by Fleur Capital Corpora...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.9935,
+            "score": 0.0024,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board issues enforcement action with Ontario Bancorporation, Inc...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.9912,
+            "score": -0.0037,
+            "correct": false
+          },
+          {
+            "text": "Federal Reserve Board issues enforcement action with former employee of Sandy Sp...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.9877,
+            "score": -0.0059,
+            "correct": false
+          },
+          {
+            "text": "SEC Proposes Expanding Securities Eligible for Cross Trading by Registered Funds...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.9883,
+            "score": 0.0074,
+            "correct": false
+          },
+          {
+            "text": "SEC Seeks Final Judgment Against Former Western Asset Co-CIO Ken Leech in Cherry...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.9892,
+            "score": -0.0026,
+            "correct": false
+          },
+          {
+            "text": "SEC Charges Meyer Global Management and Its CEO With Defrauding Retail Investors...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.8892,
+            "score": -0.0989,
+            "correct": false
+          },
+          {
+            "text": "SEC Charges Two Individuals With Orchestrating Fraud Scheme That Targeted Vetera...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.7894,
+            "score": -0.1733,
+            "correct": false
+          },
+          {
+            "text": "SEC Charges Multiple Entities in Fraud Schemes Totaling at Least $15 Million. Th...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.9036,
+            "score": -0.0873,
+            "correct": false
+          },
+          {
+            "text": "Boris Vuj\u010di\u0107: Resilience, integration and competitiveness: building the future o...",
+            "gold": "positive",
+            "pred": "neutral",
+            "confidence": 0.9797,
+            "score": 0.0176,
+            "correct": false
+          },
+          {
+            "text": "Isabel Schnabel: Monetary policy in a world of overlapping shocks. Isabel Schnab...",
+            "gold": "negative",
+            "pred": "neutral",
+            "confidence": 0.9925,
+            "score": -0.0017,
+            "correct": false
+          }
+        ]
+      },
+      "regulatory_benchmark_dev": {
+        "metrics": {
+          "n_samples": 22,
+          "accuracy": 0.5455,
+          "macro_f1": 0.5455,
+          "macro_precision": 0.7917,
+          "macro_recall": 0.5979,
+          "per_class": {
+            "positive": {
+              "precision": 1.0,
+              "recall": 0.5714,
+              "f1": 0.7273,
+              "support": 7
+            },
+            "negative": {
+              "precision": 1.0,
+              "recall": 0.2222,
+              "f1": 0.3636,
+              "support": 9
+            },
+            "neutral": {
+              "precision": 0.375,
+              "recall": 1.0,
+              "f1": 0.5455,
+              "support": 6
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 4,
+              "negative": 0,
+              "neutral": 3
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 2,
+              "neutral": 7
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 6
+            }
+          }
+        }
+      },
+      "regulatory_benchmark_heldout_ecb": {
+        "metrics": {
+          "n_samples": 8,
+          "accuracy": 0.75,
+          "macro_f1": 0.2857,
+          "macro_precision": 0.25,
+          "macro_recall": 0.3333,
+          "per_class": {
+            "positive": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 1
+            },
+            "negative": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 1
+            },
+            "neutral": {
+              "precision": 0.75,
+              "recall": 1.0,
+              "f1": 0.8571,
+              "support": 6
+            }
+          },
+          "confusion_matrix": {
+            "positive": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 1
+            },
+            "negative": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 1
+            },
+            "neutral": {
+              "positive": 0,
+              "negative": 0,
+              "neutral": 6
+            }
+          }
+        }
+      }
+    }
+  },
+  "contract_verification": [
+    {
+      "input": "Net profit surged 45% due to robust sales expansion.",
+      "predicted_label": "positive",
+      "score": 0.9834,
+      "bounded_score": true,
+      "prob_sum": 1.0
+    },
+    {
+      "input": "Operating loss widened significantly amid supply chain defaults.",
+      "predicted_label": "positive",
+      "score": 0.936,
+      "bounded_score": true,
+      "prob_sum": 1.0
+    },
+    {
+      "input": "The company will publish its interim financial report on Tuesday.",
+      "predicted_label": "neutral",
+      "score": -0.0032,
+      "bounded_score": true,
+      "prob_sum": 1.0
+    }
+  ]
+}

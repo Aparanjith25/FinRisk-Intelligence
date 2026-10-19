@@ -24,9 +24,9 @@ def test_api_portfolio_endpoint():
     assert response.status_code == 200
     data = response.json()
     assert "total_market_value" in data
-    assert data["total_market_value"] == 16000000.0
-    assert data["asset_count"] == 9
-    assert len(data["assets"]) == 9
+    assert data["total_market_value"] == 17000000.0
+    assert data["asset_count"] == 10
+    assert len(data["assets"]) == 10
 
 
 def test_api_scenarios_endpoint():
@@ -60,10 +60,10 @@ def test_api_stress_test_preconfigured_scenario():
     assert response.status_code == 200
     data = response.json()
     assert data["scenario_id"] == "geopolitical_escalation"
-    assert data["baseline_portfolio_value"] == 16000000.0
+    assert data["baseline_portfolio_value"] == 17000000.0
     assert data["total_absolute_loss"] > 0
     assert data["total_percentage_loss"] > 0
-    assert len(data["asset_results"]) == 9
+    assert len(data["asset_results"]) == 10
     assert "disclaimer" in data
 
 

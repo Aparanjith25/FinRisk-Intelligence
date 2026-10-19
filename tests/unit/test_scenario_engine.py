@@ -90,6 +90,63 @@ def test_hand_calculated_loan_shock():
     assert res.percentage_loss == 2.4
 
 
+def test_hand_calculated_derivative_pay_fixed_shocks():
+    """Verify pay-fixed IRS gains on rate hikes and loses on rate cuts."""
+    engine = ScenarioEngine()
+    asset = PortfolioAsset(
+        asset_id="SW_TEST",
+        asset_name="Test Pay-Fixed Swap",
+        asset_type="derivative",
+        market_value=1000000.0,
+        notional=10000000.0,
+        duration=4.2,
+        pay_receive="pay_fixed",
+        dv01=4200.0,
+    )
+
+    # 1. Rising rates (+50 bps hike): pay-fixed hedge gains in value
+    res_hike = engine.stress_asset(asset, {"interest_rate_shock_bps": 50.0})
+    # Delta_V = +4200 * 50 = +210,000 -> Stressed = 1,210,000
+    assert res_hike.stressed_value == 1210000.0
+    assert res_hike.absolute_loss == -210000.0  # Negative loss represents gain
+    assert res_hike.percentage_loss == -21.0
+    assert "Pay-Fixed" in res_hike.valuation_method
+
+    # 2. Falling rates (-50 bps cut): pay-fixed hedge loses value
+    res_cut = engine.stress_asset(asset, {"interest_rate_shock_bps": -50.0})
+    # Delta_V = -4200 * 50 = -210,000 -> Stressed = 790,000
+    assert res_cut.stressed_value == 790000.0
+    assert res_cut.absolute_loss == 210000.0  # Positive loss
+    assert res_cut.percentage_loss == 21.0
+
+
+def test_hand_calculated_derivative_receive_fixed_shocks():
+    """Verify receive-fixed IRS loses on rate hikes and gains on rate cuts."""
+    engine = ScenarioEngine()
+    asset = PortfolioAsset(
+        asset_id="SW_TEST_REC",
+        asset_name="Test Receive-Fixed Swap",
+        asset_type="derivative",
+        market_value=1000000.0,
+        notional=10000000.0,
+        duration=4.2,
+        pay_receive="receive_fixed",
+        dv01=4200.0,
+    )
+
+    # 1. Rising rates (+50 bps hike): receive-fixed loses
+    res_hike = engine.stress_asset(asset, {"interest_rate_shock_bps": 50.0})
+    assert res_hike.stressed_value == 790000.0
+    assert res_hike.absolute_loss == 210000.0
+    assert res_hike.percentage_loss == 21.0
+
+    # 2. Falling rates (-50 bps cut): receive-fixed gains
+    res_cut = engine.stress_asset(asset, {"interest_rate_shock_bps": -50.0})
+    assert res_cut.stressed_value == 1210000.0
+    assert res_cut.absolute_loss == -210000.0
+    assert res_cut.percentage_loss == -21.0
+
+
 def test_portfolio_consolidation_and_loss_contributions():
     assets = [
         PortfolioAsset("E1", "Stock A", "equity", 1000000.0),
